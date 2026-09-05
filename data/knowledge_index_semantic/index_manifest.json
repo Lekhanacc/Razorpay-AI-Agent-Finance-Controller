@@ -1,0 +1,17 @@
+{
+  "chunks_per_source": {
+    "sl_payment_links_about": 6,
+    "sl_payment_links_api_index": 3,
+    "sl_payment_links_create_standard": 7,
+    "sl_payment_links_how_it_works": 6,
+    "sl_subscriptions_create": 8,
+    "sl_subscriptions_overview_MISMATCH": 5,
+    "sl_webhooks_payments": 6
+  },
+  "embedding_build_time_seconds": 4.6224,
+  "embedding_dimension": 384,
+  "embedding_model_name": "sentence-transformers/all-MiniLM-L6-v2",
+  "embedding_model_source": "local (offline, user-provided files; huggingface.co is not reachable in this environment)",
+  "embeddings_normalized": true,
+  "num_chunks": 41
+}

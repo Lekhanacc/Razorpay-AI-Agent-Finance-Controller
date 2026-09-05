@@ -1,0 +1,6 @@
+{"id":"in_domain_payment_links","text":"How do I create a payment link?","category":"in_domain","expected_domain":"RAZORPAY"}
+{"id":"out_of_domain","text":"Why did my Stripe payment fail?","category":"out_of_domain","expected_domain":"OUT_OF_DOMAIN","expected_status":"OUT_OF_DOMAIN"}
+{"id":"ambiguous","text":"Why did my payment fail?","category":"ambiguous","expected_domain":"AMBIGUOUS","expected_status":"CLARIFY"}
+{"id":"unsupported","text":"Where can I see the current state of refund rfnd_DEF456? from my backend","category":"unsupported","expected_domain":"RAZORPAY","expected_status":"INSUFFICIENT_EVIDENCE"}
+{"id":"follow_up_seed","text":"The customer says they paid. Can I check the transaction status? for a customer","category":"follow_up_seed","conversation_id":"payment-link-demo"}
+{"id":"follow_up","text":"What is its expiry?","category":"follow_up","conversation_id":"payment-link-demo","expects_context":true}

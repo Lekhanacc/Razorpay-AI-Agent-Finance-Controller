@@ -1,0 +1,339 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fa;
+    min-height: 100vh;
+}
+
+.app {
+    width: 100%;
+    max-width: 1000px;
+    height: 100vh;
+    margin: auto;
+    background: white;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* HEADER */
+
+.header {
+    height: 75px;
+    padding: 0 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #3395ff;
+    color: white;
+
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.logo h1 {
+    font-size: 18px;
+}
+
+.logo p {
+    margin-top: 3px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    font-size: 13px;
+    color: #16a34a;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+    background: #22c55e;
+}
+
+
+/* CHAT */
+
+.chat-container {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+.messages {
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: 30px;
+}
+
+
+/* MESSAGE */
+
+.message {
+    display: flex;
+    gap: 12px;
+
+    margin-bottom: 22px;
+}
+
+.message.user {
+    justify-content: flex-end;
+}
+
+.avatar {
+    width: 35px;
+    height: 35px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #3395ff;
+    color: white;
+
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.message.user .avatar {
+    order: 2;
+    background: #111827;
+}
+
+.bubble {
+    max-width: 70%;
+
+    padding: 14px 17px;
+
+    border-radius: 14px;
+
+    background: #f3f4f6;
+
+    line-height: 1.5;
+}
+
+.message.user .bubble {
+    background: #3395ff;
+    color: white;
+}
+
+.message-title {
+    margin-bottom: 5px;
+
+    font-size: 12px;
+    font-weight: bold;
+
+    color: #6b7280;
+}
+
+.message.user .message-title {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.bubble p {
+    font-size: 14px;
+}
+
+
+/* LOADING */
+
+.loading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 0 30px 15px;
+}
+
+.hidden {
+    display: none;
+}
+
+.typing {
+    display: flex;
+    gap: 4px;
+
+    padding: 14px 17px;
+
+    background: #f3f4f6;
+
+    border-radius: 14px;
+}
+
+.typing span {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: #9ca3af;
+
+    animation: typing 1s infinite;
+}
+
+.typing span:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.typing span:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+@keyframes typing {
+
+    0%,
+    60%,
+    100% {
+        transform: translateY(0);
+    }
+
+    30% {
+        transform: translateY(-5px);
+    }
+}
+
+
+/* INPUT */
+
+.input-area {
+    display: flex;
+    gap: 10px;
+
+    padding: 18px 25px;
+
+    border-top: 1px solid #e5e7eb;
+}
+
+#userInput {
+    flex: 1;
+
+    padding: 13px 15px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+
+    outline: none;
+
+    font-size: 14px;
+}
+
+#userInput:focus {
+    border-color: #3395ff;
+}
+
+#sendButton {
+    padding: 0 22px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #3395ff;
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+#sendButton:hover {
+    opacity: 0.9;
+}
+
+#sendButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hint {
+    padding: 0 25px 15px;
+
+    text-align: center;
+
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .header {
+        padding: 0 15px;
+    }
+
+    .messages {
+        padding: 20px 15px;
+    }
+
+    .bubble {
+        max-width: 80%;
+    }
+
+    .input-area {
+        padding: 15px;
+    }
+}
+
+.sources {
+    margin-top: 12px;
+    font-size: 13px;
+}
+
+.sources summary {
+    cursor: pointer;
+    color: #2b6df3;
+    font-weight: 600;
+}
+
+.sources ul {
+    margin: 8px 0 0;
+    padding-left: 18px;
+}
+
+.sources a {
+    color: #2b6df3;
+}
