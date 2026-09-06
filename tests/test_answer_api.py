@@ -51,9 +51,10 @@ def test_answer_endpoint_rejects_empty_text(client):
     assert client.post("/v1/rag/answer", json={}).status_code == 422
 
 
-def test_answer_endpoint_missing_api_key_uses_evidence_only_fallback(client):
-    # Gemini is optional: missing server-side credentials must not break an
-    # otherwise evidence-grounded UI response.
+def test_answer_endpoint_missing_api_key_uses_local_grounded_fallback(client):
+    # The optional remote provider is absent here; the evidence-gated local
+    # renderer keeps the integrated UI usable without exposing or requiring a
+    # browser-side API key.
     import os
 
     assert os.environ.get("GEMINI_API_KEY") in (None, "")
@@ -61,7 +62,7 @@ def test_answer_endpoint_missing_api_key_uses_evidence_only_fallback(client):
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "ANSWERED"
-    assert body["reason"] == "local_grounded_fallback: missing_api_key"
+    assert body["reason"] == "local_grounded_fallback"
     assert body["answer"]
     assert body["sources"]
 

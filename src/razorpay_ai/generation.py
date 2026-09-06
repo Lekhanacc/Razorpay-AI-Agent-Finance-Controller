@@ -17,7 +17,6 @@ this sandbox. See the Phase 4 report for exactly what was and wasn't verified.
 from __future__ import annotations
 
 import os
-import re
 import time
 
 import httpx
@@ -46,23 +45,6 @@ def _get_api_key() -> str:
             f"{GEMINI_API_KEY_ENV_VAR} is not set. Set it in the environment to enable answer generation."
         )
     return api_key
-
-
-def _safe_gemini_error_detail(response: httpx.Response) -> str:
-    """Return useful Google error metadata without exposing credentials or prompts."""
-    try:
-        error = response.json().get("error", {})
-    except (ValueError, AttributeError):
-        return ""
-    if not isinstance(error, dict):
-        return ""
-    fields = [str(error[field]) for field in ("code", "status", "message") if error.get(field)]
-    detail = " | ".join(fields)
-    # Defense in depth: redact common query-key and Google API-key forms before
-    # exposing a provider error through the internal API response.
-    detail = re.sub(r"(?i)(key=)[^\s&]+", r"\1[REDACTED]", detail)
-    detail = re.sub(r"AIza[\w-]+", "[REDACTED]", detail)
-    return detail
 
 
 class GeminiClient:
@@ -107,9 +89,6 @@ class GeminiClient:
                     continue
                 # Do not include str(exc): HTTPX embeds the query string and API key.
                 detail = f"HTTP {status_code}" if status_code is not None else "an HTTP error"
-                provider_detail = _safe_gemini_error_detail(exc.response)
-                if provider_detail:
-                    detail = f"{detail}: {provider_detail}"
                 raise GenerationFailedError(f"Gemini request failed with {detail}.") from exc
             except httpx.RequestError as exc:
                 raise GenerationFailedError("Gemini request failed due to a network error.") from exc

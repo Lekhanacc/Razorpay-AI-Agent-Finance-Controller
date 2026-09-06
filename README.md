@@ -67,7 +67,7 @@ Gemini is an optional, backend-only generation provider. To enable it, set the k
 $env:GEMINI_API_KEY = "your-key"
 ```
 
-The API key is read by the server only, never sent to the frontend or written to project files. Gemini remains the preferred grounded generator. If it is unavailable (missing key, quota, provider error, or a network failure), the backend returns a concise deterministic extractive answer from the already retrieved and provenance-backed documentation. It does not make a browser-side model call, add a second RAG system, or invent unsupported facts.
+The API key is read by the server only, never sent to the frontend or written to project files. Without it, the system uses its built-in evidence-only local fallback: it renders the highest-ranked retrieved documentation excerpt and returns its real provenance. It does not invent an answer or make a browser-side model call.
 
 ## Verification
 

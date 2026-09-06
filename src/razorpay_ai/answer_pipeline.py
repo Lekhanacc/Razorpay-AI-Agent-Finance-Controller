@@ -16,8 +16,6 @@ confidence policy -- it composes them.
 
 from __future__ import annotations
 
-import re
-
 from .confidence import ConfidenceDecision, evaluate_confidence
 from .config import ANSWER_FALLBACK_RETRIEVER, ANSWER_PRIMARY_RETRIEVER
 from .generation import GeminiClient, GenerationFailedError, MissingAPIKeyError
@@ -45,42 +43,17 @@ INSUFFICIENT_EVIDENCE_MESSAGE = (
     "so I don't want to guess. Could you rephrase, or point me to the specific Razorpay product this concerns?"
 )
 
-_STOP_WORDS = frozenset(
-    "a an and are as at be can do for from how i if in is it later of on one or should the this to what when where "
-    "which who why with you your".split()
-)
 
+def _local_grounded_fallback(chunks: list[dict]) -> str:
+    """Produce a safe, extractive answer when optional remote generation is unavailable.
 
-def _local_grounded_answer(query: str, chunks: list[dict]) -> str:
-    """Render a concise extractive answer from already-approved evidence.
-
-    This is a deterministic availability fallback, not another model, knowledge
-    base, or retriever. It is used only after the existing NLU/confidence and
-    evidence gates succeed, preserving the same provenance returned to clients.
+    This is deliberately not another model or retriever: it renders the highest
+    ranked, already evidence-gated documentation excerpt with its real title.
+    It keeps the UI useful without a Gemini key while preserving the same NLU,
+    confidence, retrieval, and provenance boundaries as generated answers.
     """
     best = chunks[0]
-    keywords = {
-        token.lower()
-        for token in re.findall(r"[A-Za-z][A-Za-z0-9_-]*", query)
-        if token.lower() not in _STOP_WORDS and len(token) > 2
-    }
-    sentences = [
-        " ".join(sentence.split())
-        for sentence in re.split(r"(?<=[.!?])\s+", best["text"])
-        if sentence.strip()
-    ]
-    scored = [
-        (
-            sum(token.lower() in keywords for token in re.findall(r"[A-Za-z][A-Za-z0-9_-]*", sentence)),
-            -index,
-            sentence,
-        )
-        for index, sentence in enumerate(sentences)
-    ]
-    selected = [item[2] for item in sorted(scored, reverse=True)[:2] if item[0] > 0]
-    if not selected:
-        selected = sentences[:2]
-    excerpt = " ".join(selected).strip()
+    excerpt = " ".join(best["text"].split())
     return f"According to Razorpay documentation — {best['title']}: {excerpt}"
 
 
@@ -169,19 +142,19 @@ class AnswerPipeline:
             return {
                 "query": text,
                 "status": "ANSWERED",
-                "answer": _local_grounded_answer(text, chunk_dicts),
+                "answer": _local_grounded_fallback(chunk_dicts),
                 "retriever_used": retriever_name,
                 "sources": chunk_dicts,
-                "reason": "local_grounded_fallback: missing_api_key",
+                "reason": "local_grounded_fallback",
             }
         except GenerationFailedError as exc:
             return {
                 "query": text,
-                "status": "ANSWERED",
-                "answer": _local_grounded_answer(text, chunk_dicts),
+                "status": "GENERATION_FAILED",
+                "answer": None,
                 "retriever_used": retriever_name,
                 "sources": chunk_dicts,
-                "reason": f"local_grounded_fallback: {exc}",
+                "reason": str(exc),
             }
 
         return {

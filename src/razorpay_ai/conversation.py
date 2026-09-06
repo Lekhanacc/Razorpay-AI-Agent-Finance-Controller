@@ -14,7 +14,7 @@ import re
 
 
 _FOLLOW_UP_PATTERN = re.compile(
-    r"\b(it|its|they|them|their|that|those|this|these|one|previous|above)\b",
+    r"\b(it|its|they|them|their|that|those|this|these|previous|above)\b",
     re.IGNORECASE,
 )
 

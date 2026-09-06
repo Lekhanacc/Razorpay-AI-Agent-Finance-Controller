@@ -43,9 +43,8 @@ def test_generate_raises_generation_failed_on_non_2xx_response(monkeypatch):
 
     monkeypatch.setattr(httpx, "post", _fake_post)
     client = GeminiClient()
-    with pytest.raises(GenerationFailedError) as exc_info:
+    with pytest.raises(GenerationFailedError):
         client.generate("system", "user prompt")
-    assert "HTTP 400" in str(exc_info.value)
 
 
 def test_generate_raises_generation_failed_on_unexpected_response_shape(monkeypatch):

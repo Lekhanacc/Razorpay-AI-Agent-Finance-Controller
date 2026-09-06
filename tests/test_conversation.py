@@ -19,18 +19,6 @@ def test_follow_up_is_enriched_from_real_prior_source():
     assert query.endswith("What is its expiry?")
 
 
-def test_one_follow_up_is_enriched_from_real_prior_source():
-    memory = ConversationMemory()
-    memory.record(
-        "demo",
-        "What is a Payment Link?",
-        {"status": "ANSWERED", "sources": [{"title": "Payment Links"}]},
-    )
-    query, applied = memory.contextualize("demo", "How do I create one?")
-    assert applied is True
-    assert "Payment Links" in query
-
-
 def test_unrelated_or_unknown_conversation_is_not_expanded():
     memory = ConversationMemory()
     assert memory.contextualize("unknown", "What is its expiry?") == ("What is its expiry?", False)

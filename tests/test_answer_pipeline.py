@@ -87,22 +87,22 @@ def test_query_with_no_retrieval_evidence_never_calls_gemini(real_rag_pipeline):
     assert fake_gemini.last_call is None
 
 
-def test_missing_api_key_uses_evidence_only_fallback_and_keeps_sources(real_rag_pipeline):
+def test_missing_api_key_returns_generation_unavailable_but_keeps_retrieved_sources(real_rag_pipeline):
     fake_gemini = _FakeGeminiClient(exception=MissingAPIKeyError("no key set"))
     pipeline = AnswerPipeline(real_rag_pipeline, fake_gemini)
     result = pipeline.answer("The customer says they paid. Can I check the transaction status? for a customer")
-    assert result["status"] == "ANSWERED"
-    assert result["answer"]
-    assert result["reason"] == "local_grounded_fallback: missing_api_key"
+    assert result["status"] == "GENERATION_UNAVAILABLE"
+    assert result["answer"] is None
+    assert result["reason"] == "missing_api_key"
     assert result["sources"]
 
 
-def test_gemini_failure_uses_evidence_only_fallback_and_keeps_sources(real_rag_pipeline):
+def test_gemini_failure_returns_generation_failed_but_keeps_retrieved_sources(real_rag_pipeline):
     fake_gemini = _FakeGeminiClient(exception=GenerationFailedError("network error"))
     pipeline = AnswerPipeline(real_rag_pipeline, fake_gemini)
     result = pipeline.answer("The customer says they paid. Can I check the transaction status? for a customer")
-    assert result["status"] == "ANSWERED"
-    assert result["answer"]
+    assert result["status"] == "GENERATION_FAILED"
+    assert result["answer"] is None
     assert "network error" in result["reason"]
     assert result["sources"]
 
